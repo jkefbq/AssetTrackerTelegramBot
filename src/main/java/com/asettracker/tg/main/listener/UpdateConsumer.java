@@ -1,6 +1,6 @@
 package com.asettracker.tg.main.listener;
 
-import com.asettracker.tg.main.menu.MainMenu;
+import com.asettracker.tg.main.menu.main.MainMenu;
 import com.asettracker.tg.main.service.GeneralButtonHandler;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
@@ -22,10 +22,9 @@ public class UpdateConsumer implements LongPollingSingleThreadUpdateConsumer {
     @Override
     public void consume(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
-            mainMenu.sendMainMenu(update);
+            mainMenu.sendMenu(update);
         } else if (update.hasCallbackQuery()) {
-            buttonHandler.handleAnyButton(update);
+            buttonHandler.handleAnyButton(update.getCallbackQuery());
         }
     }
-
 }
