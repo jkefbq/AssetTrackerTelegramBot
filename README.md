@@ -7,13 +7,13 @@
 
 ## ⚙Технологии
 - Spring Boot
-- PostgreSQ
+- PostgreSQL
 - Redis
 - MapStruct
 - Lombok
 - TelegramBots
 ### тесты
-- Mockito
 - JUnit
+- Mockito
 - TestContainers
 - Liquibase

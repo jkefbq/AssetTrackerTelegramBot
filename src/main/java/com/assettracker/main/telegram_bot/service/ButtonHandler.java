@@ -1,0 +1,40 @@
+package com.assettracker.main.telegram_bot.service;
+
+import com.assettracker.main.telegram_bot.buttons.menu.IButton;
+import com.assettracker.main.telegram_bot.buttons.menu.asset_list_menu.Coins;
+import com.assettracker.main.telegram_bot.buttons.menu.asset_list_menu.IAsset;
+import com.assettracker.main.telegram_bot.events.AssetButtonEvent;
+import com.assettracker.main.telegram_bot.events.ButtonEvent;
+import com.assettracker.main.telegram_bot.events.Buttons;
+import lombok.AllArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+
+import java.util.List;
+
+@Service
+@AllArgsConstructor
+public class ButtonHandler {
+
+    private final List<IButton> buttons;
+    private final AssetService assetService;
+    private final ApplicationEventPublisher eventPublisher;
+
+    public void handle(CallbackQuery callbackQuery) {
+        var chatId = callbackQuery.getFrom().getId();
+
+        buttons.forEach(button -> {
+            if (button.getCallbackData().equals(callbackQuery.getData())) {
+                if (button instanceof IAsset) {
+                    Coins thisCoin = ((IAsset) button).getCoin();
+                    eventPublisher.publishEvent(new AssetButtonEvent(this, thisCoin, chatId));
+                } else {
+                    Buttons thisButton = Buttons.parseCallbackData(callbackQuery.getData());
+                    eventPublisher.publishEvent(new ButtonEvent(this, thisButton, chatId));
+                }
+
+            }
+        });
+    }
+}
