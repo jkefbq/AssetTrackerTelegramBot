@@ -1,18 +1,25 @@
 package com.assettracker.main.telegram_bot.events;
 
-import com.assettracker.main.telegram_bot.buttons.menu.asset_list_menu.AssetDo;
-import com.assettracker.main.telegram_bot.buttons.menu.asset_list_menu.AssetListMenu;
-import com.assettracker.main.telegram_bot.buttons.menu.asset_list_menu.UserCoin;
-import com.assettracker.main.telegram_bot.buttons.menu.bag_menu.BagMenu;
-import com.assettracker.main.telegram_bot.buttons.menu.enter_asset_count_menu.EnterAssetCountMenu;
-import com.assettracker.main.telegram_bot.buttons.menu.incorrect_create_asset_menu.IncorrectCreateAssetMenu;
-import com.assettracker.main.telegram_bot.buttons.menu.incorrect_delete_menu.IncorrectDeleteMenu;
-import com.assettracker.main.telegram_bot.buttons.menu.incorrect_update_asset_menu.IncorrectUpdateAssetMenu;
-import com.assettracker.main.telegram_bot.buttons.menu.manage_assets_menu.ManageAssetsMenu;
+import com.assettracker.main.telegram_bot.database.dto.BagDto;
 import com.assettracker.main.telegram_bot.database.service.BagService;
+import com.assettracker.main.telegram_bot.menu.asset_list_menu.AssetDo;
+import com.assettracker.main.telegram_bot.menu.asset_list_menu.AssetListMenu;
+import com.assettracker.main.telegram_bot.menu.asset_list_menu.UserCoin;
+import com.assettracker.main.telegram_bot.menu.asset_statistics_menu.AssetStatisticsMenu;
+import com.assettracker.main.telegram_bot.menu.bag_menu.BagMenu;
+import com.assettracker.main.telegram_bot.menu.enter_asset_count_menu.EnterAssetCountMenu;
+import com.assettracker.main.telegram_bot.menu.incorrect_create_asset_menu.IncorrectCreateAssetMenu;
+import com.assettracker.main.telegram_bot.menu.incorrect_delete_menu.IncorrectDeleteMenu;
+import com.assettracker.main.telegram_bot.menu.incorrect_update_asset_menu.IncorrectUpdateAssetMenu;
+import com.assettracker.main.telegram_bot.menu.main_menu.MainMenu;
+import com.assettracker.main.telegram_bot.menu.manage_assets_menu.ManageAssetsMenu;
+import com.assettracker.main.telegram_bot.menu.my_assets_menu.MyAssetsMenu;
+import com.assettracker.main.telegram_bot.menu.my_profile_menu.MyProfileMenu;
+import com.assettracker.main.telegram_bot.menu.waiting_menu.WaitingMenu;
 import com.assettracker.main.telegram_bot.service.AssetService;
 import com.assettracker.main.telegram_bot.service.LastMessageService;
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
@@ -32,10 +39,16 @@ public class ButtonEventHandler {
     private final AssetListMenu assetListMenu;
     private final EnterAssetCountMenu enterAssetCountMenu;
     private final IncorrectDeleteMenu incorrectDeleteMenu;
+    private final MyProfileMenu profileMenu;
+    private final MainMenu mainMenu;
+    private final WaitingMenu waitingMenu;
+    private final MyAssetsMenu myAssetsMenu;
+    private final AssetStatisticsMenu assetStatisticsMenu;
 
     @EventListener(condition = "event.getButton.name() == 'MY_BAG'")
     public void handleMyBag(ButtonEvent event) {
         Integer lastMessageId = lastMessageService.getLastMessage(event.getChatId());
+        waitingMenu.editMsgAndSendMenu(event.getChatId(), lastMessageId);
         bagMenu.editMsgAndSendMenu(event.getChatId(), lastMessageId);
     }
 
@@ -92,6 +105,51 @@ public class ButtonEventHandler {
         assetService.saveTmpUserCoin(new UserCoin(event.getChatId(), AssetDo.DELETE));
     }
 
+    @EventListener(condition = "event.getButton().name() == 'CANCEL_TO_MENU'")
+    public void handleCancelToMenu(ButtonEvent event) {
+        Integer lastMessageId = lastMessageService.getLastMessage(event.getChatId());
+        mainMenu.editMsgAndSendMenu(event.getChatId(), lastMessageId);
+    }
+
+    @EventListener(condition = "event.getButton().name() == 'MY_PROFILE'")
+    public void handleProfile(ButtonEvent event) {
+        Integer lastMessageId = lastMessageService.getLastMessage(event.getChatId());
+        waitingMenu.editMsgAndSendMenu(event.getChatId(), lastMessageId);
+        profileMenu.editMsgAndSendMenu(event.getChatId(), lastMessageId);
+    }
+
+    @EventListener(condition = "event.getButton().name() == 'CANCEL_TO_BAG_MENU'")
+    public void handleCancelToBagMenu(ButtonEvent event) {
+        Integer lastMessageId = lastMessageService.getLastMessage(event.getChatId());
+        waitingMenu.editMsgAndSendMenu(event.getChatId(), lastMessageId);
+        bagMenu.editMsgAndSendMenu(event.getChatId(), lastMessageId);
+    }
+
+    @SneakyThrows
+    @EventListener(condition = "event.getButton().name() == 'UPDATE_BAG_DATA'")
+    public void handleUpdateBagData(ButtonEvent event) {
+        BagDto bag = bagService.findByChatId(event.getChatId()).orElseThrow();
+        bagService.actualizeBagFields(bag);
+
+        Integer lastMessageId = lastMessageService.getLastMessage(event.getChatId());
+        waitingMenu.editMsgAndSendMenu(event.getChatId(), lastMessageId);
+        bagMenu.editMsgAndSendMenu(event.getChatId(), lastMessageId);
+    }
+
+    @EventListener(condition = "event.getButton().name() == 'MY_ASSETS' || " +
+            "event.getButton().name() == 'CANCEL_TO_MY_ASSETS'")
+    public void handleMyAssets(ButtonEvent event) {
+        Integer lastMessageId = lastMessageService.getLastMessage(event.getChatId());
+        myAssetsMenu.editMsgAndSendMenu(event.getChatId(), lastMessageId);
+    }
+
+    @EventListener(condition = "event.getButton().name() == 'ASSET_STATISTICS'")
+    public void handleAssetStatistics(ButtonEvent event) {
+        Integer lastMessageId = lastMessageService.getLastMessage(event.getChatId());
+        waitingMenu.editMsgAndSendMenu(event.getChatId(), lastMessageId);
+        assetStatisticsMenu.editMsgAndSendMenu(event.getChatId(), lastMessageId);
+    }
+
     @EventListener
     public void handleAnyAssetButton(AssetButtonEvent event) {
         var tmpCoin = assetService.getTmpUserCoin(event.getChatId());
@@ -99,6 +157,7 @@ public class ButtonEventHandler {
 
         tmpCoin.setCoin(event.getCoin());
         assetService.saveTmpUserCoin(tmpCoin);
+        waitingMenu.editMsgAndSendMenu(event.getChatId(), lastMessageId);
         processAsset(event, tmpCoin, lastMessageId);
     }
 

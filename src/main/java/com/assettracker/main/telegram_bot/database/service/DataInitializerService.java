@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class DataInitializerService {
 
-    private final UserDbService userService;
+    private final UserService userService;
     private final BagService bagService;
 
     public void initializeUserAndBag(UpdateDto updateDto) {

@@ -1,8 +1,8 @@
 package com.assettracker.main.telegram_bot.service;
 
-import com.assettracker.main.telegram_bot.buttons.menu.IButton;
-import com.assettracker.main.telegram_bot.buttons.menu.asset_list_menu.Coins;
-import com.assettracker.main.telegram_bot.buttons.menu.asset_list_menu.IAsset;
+import com.assettracker.main.telegram_bot.menu.IButton;
+import com.assettracker.main.telegram_bot.menu.asset_list_menu.Coins;
+import com.assettracker.main.telegram_bot.menu.asset_list_menu.IAsset;
 import com.assettracker.main.telegram_bot.events.AssetButtonEvent;
 import com.assettracker.main.telegram_bot.events.ButtonEvent;
 import com.assettracker.main.telegram_bot.events.Buttons;

@@ -18,7 +18,7 @@ public class MessageHandler {
 
     private final ApplicationEventPublisher eventPublisher;
 
-    public void handleAnyMessage(Update update) {
+    public void handle(Update update) {
         String text = update.getMessage().getText().trim();
         UpdateDto dto = UpdateUtils.toDto(update);
         try {

@@ -1,6 +1,6 @@
 package com.assettracker.main.telegram_bot.service;
 
-import com.assettracker.main.telegram_bot.buttons.menu.asset_list_menu.Coins;
+import com.assettracker.main.telegram_bot.menu.asset_list_menu.Coins;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,24 +43,57 @@ public class MarketInfoKeeper {
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(SIMPLE_PRICE_URL +
-                        "?vs_currencies=usd&ids=" + coinsIdsString))
+                        "?vs_currencies=usd&precision=10&ids=" + coinsIdsString))
                 .header("x-cg-demo-api-key", GECKO_KEY)
                 .GET()
                 .build();
-        log.info("create https request to retrieve coin prices");
+        log.info("about to send https request to retrieve coin prices");
         String json = HttpClient.newHttpClient()
                 .send(request, HttpResponse.BodyHandlers.ofString())
                 .body();
-        return toResultMap(json);
+        return toResultCoinPriceMap(json);
+    }
+
+    public Map<Coins, Map.Entry<BigDecimal, BigDecimal>> getCoinChanges(Set<Coins> coins)
+            throws IOException, InterruptedException {
+        String coinsIdsString = String.join(",", coins.stream().map(Coins::getIdsName).toList());
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(SIMPLE_PRICE_URL +
+                        "?vs_currencies=usd&precision=10&include_24hr_change=true&ids=" + coinsIdsString))
+                .header("x-cg-demo-api-key", GECKO_KEY)
+                .GET()
+                .build();
+        log.info("about to send https request to retrieve coin changes");
+        String json = HttpClient.newHttpClient()
+                .send(request, HttpResponse.BodyHandlers.ofString())
+                .body();
+        return toResultCoinChangeMap(json);
+    }
+
+    private Map<Coins, Map.Entry<BigDecimal, BigDecimal>> toResultCoinChangeMap(String json) throws JsonProcessingException {
+        Map<Coins, Map.Entry<BigDecimal, BigDecimal>> result = new HashMap<>();
+
+        JsonNode jsonNode = mapper.readTree(json);
+        jsonNode.forEachEntry((coinIds, node) -> {
+            result.put(
+                    Coins.getCoinForIds(coinIds),
+                    Map.entry(
+                            node.get("usd_24h_change").decimalValue(), node.get("usd").decimalValue()
+                    )
+            );
+        });
+
+        return result;
     }
 
 
-    public Map<Coins, BigDecimal> toResultMap(String json) throws JsonProcessingException {
+    private Map<Coins, BigDecimal> toResultCoinPriceMap(String json) throws JsonProcessingException {
         Map<Coins, BigDecimal> result = new HashMap<>();
 
         JsonNode jsonNode = mapper.readTree(json);
-        jsonNode.forEachEntry((k, v) ->
-                result.put(Coins.getCoinForIds(k), v.get("usd").decimalValue()));
+        jsonNode.forEachEntry((coinIds, node) ->
+                result.put(Coins.getCoinForIds(coinIds), node.get("usd").decimalValue()));
         return result;
     }
 }

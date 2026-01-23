@@ -1,13 +1,14 @@
 package com.assettracker.main.telegram_bot.database.service;
 
-import com.assettracker.main.telegram_bot.buttons.menu.asset_list_menu.Coins;
-import com.assettracker.main.telegram_bot.buttons.menu.asset_list_menu.UserCoin;
+import com.assettracker.main.telegram_bot.menu.asset_list_menu.Coins;
+import com.assettracker.main.telegram_bot.menu.asset_list_menu.UserCoin;
 import com.assettracker.main.telegram_bot.database.dto.BagDto;
 import com.assettracker.main.telegram_bot.database.entity.BagEntity;
 import com.assettracker.main.telegram_bot.database.mapper.BagMapper;
 import com.assettracker.main.telegram_bot.database.repository.BagRepository;
 import com.assettracker.main.telegram_bot.service.MarketInfoKeeper;
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -91,9 +92,16 @@ public class BagService {
         bag.setTotalCost(totalCost);
         bag.setAssetCount(bag.getAssets().size());
 
-        bagRepo.save(mapper.toEntity(bag));
+        updateBag(mapper.toEntity(bag));
         log.info("update assets: {totalCost:{}, assetCount:{}} in bag with chatId={}", bag.getTotalCost(),
                 bag.getAssetCount(), bag.getChatId());
+    }
+
+    @SneakyThrows
+    @Transactional
+    public Map<Coins, Map.Entry<BigDecimal, BigDecimal>> getCoinChanges(Long chatId) {
+        BagDto bag = findByChatId(chatId).orElseThrow();
+        return marketInfoKeeper.getCoinChanges(bag.getAssets().keySet());
     }
 
     @Transactional

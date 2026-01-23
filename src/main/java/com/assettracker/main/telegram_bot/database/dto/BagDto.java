@@ -1,6 +1,6 @@
 package com.assettracker.main.telegram_bot.database.dto;
 
-import com.assettracker.main.telegram_bot.buttons.menu.asset_list_menu.Coins;
+import com.assettracker.main.telegram_bot.menu.asset_list_menu.Coins;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

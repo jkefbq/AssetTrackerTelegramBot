@@ -1,6 +1,6 @@
 package com.assettracker.main.telegram_bot.service;
 
-import com.assettracker.main.telegram_bot.buttons.menu.asset_list_menu.UserCoin;
+import com.assettracker.main.telegram_bot.menu.asset_list_menu.UserCoin;
 import com.assettracker.main.telegram_bot.database.entity.UserCoinEntity;
 import com.assettracker.main.telegram_bot.database.repository.UserCoinRepository;
 import lombok.AllArgsConstructor;

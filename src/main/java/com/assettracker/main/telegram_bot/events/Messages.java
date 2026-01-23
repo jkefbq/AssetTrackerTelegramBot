@@ -8,6 +8,7 @@ public enum Messages {
     UNKNOWN(""),
     START("/start"),
     MENU("/menu"),
+    PROFILE("/profile"),
     BAG("/bag");
 
     @Getter

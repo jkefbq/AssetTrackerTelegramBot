@@ -1,6 +1,6 @@
 package com.assettracker.main.telegram_bot.database.entity;
 
-import com.assettracker.main.telegram_bot.buttons.menu.asset_list_menu.Coins;
+import com.assettracker.main.telegram_bot.menu.asset_list_menu.Coins;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;

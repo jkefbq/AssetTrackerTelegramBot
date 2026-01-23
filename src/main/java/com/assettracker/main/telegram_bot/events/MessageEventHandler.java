@@ -1,12 +1,15 @@
 package com.assettracker.main.telegram_bot.events;
 
-import com.assettracker.main.telegram_bot.buttons.menu.asset_list_menu.UserCoin;
-import com.assettracker.main.telegram_bot.buttons.menu.bag_menu.BagMenu;
-import com.assettracker.main.telegram_bot.buttons.menu.enter_asset_count_menu.EnterAssetCountMenu;
-import com.assettracker.main.telegram_bot.buttons.menu.main_menu.MainMenu;
+import com.assettracker.main.telegram_bot.menu.asset_list_menu.UserCoin;
+import com.assettracker.main.telegram_bot.menu.bag_menu.BagMenu;
+import com.assettracker.main.telegram_bot.menu.enter_asset_count_menu.EnterAssetCountMenu;
+import com.assettracker.main.telegram_bot.menu.main_menu.MainMenu;
 import com.assettracker.main.telegram_bot.database.service.BagService;
 import com.assettracker.main.telegram_bot.database.service.DataInitializerService;
+import com.assettracker.main.telegram_bot.menu.my_profile_menu.MyProfileMenu;
+import com.assettracker.main.telegram_bot.menu.waiting_menu.WaitingMenu;
 import com.assettracker.main.telegram_bot.service.AssetService;
+import com.assettracker.main.telegram_bot.service.LastMessageService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -28,12 +31,16 @@ public class MessageEventHandler {
     private final DataInitializerService initializer;
     private final AssetService assetService;
     private final EnterAssetCountMenu enterAssetCountMenu;
+    private final WaitingMenu waitingMenu;
+    private final LastMessageService lastMessageService;
+    private final MyProfileMenu myProfileMenu;
 
     @EventListener(condition = "event.getMessage().name() == 'START'")
-//todo перед каждым проверить вдруг чел должен был ввести число, соответственоо сбросить tmp через AOP
     public void handleStart(MessageEvent event) {
         var chatId = event.getUpdateDto().getChatId();
-        mainMenu.sendMenu(chatId);
+        Integer lastMessageId = lastMessageService.getLastMessage(event.getUpdateDto().getChatId());
+        waitingMenu.sendMenu(chatId);
+        mainMenu.editMsgAndSendMenu(chatId, lastMessageId);
         es.execute(() -> {
             if (bagService.findByChatId(chatId).isEmpty()) {
                 initializer.initializeUserAndBag(event.getUpdateDto());
@@ -49,7 +56,16 @@ public class MessageEventHandler {
 
     @EventListener(condition = "event.getMessage().name() == 'BAG'")
     public void handleBag(MessageEvent event) {
-        bagMenu.sendMenu(event.getUpdateDto().getChatId());
+        waitingMenu.sendMenu(event.getUpdateDto().getChatId());
+        Integer lastMessageId = lastMessageService.getLastMessage(event.getUpdateDto().getChatId());
+        bagMenu.editMsgAndSendMenu(event.getUpdateDto().getChatId(), lastMessageId);
+    }
+
+    @EventListener(condition = "event.getMessage().name() == 'PROFILE'")
+    public void handleProfile(MessageEvent event) {
+        waitingMenu.sendMenu(event.getUpdateDto().getChatId());
+        Integer lastMessageId = lastMessageService.getLastMessage(event.getUpdateDto().getChatId());
+        myProfileMenu.editMsgAndSendMenu(event.getUpdateDto().getChatId(), lastMessageId);
     }
 
     @EventListener(condition = "event.getMessage().name() == 'UNKNOWN'")
