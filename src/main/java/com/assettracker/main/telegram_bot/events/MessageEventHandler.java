@@ -9,6 +9,7 @@ import com.assettracker.main.telegram_bot.menu.asset_list_menu.UserCoin;
 import com.assettracker.main.telegram_bot.menu.bag_menu.BagMenu;
 import com.assettracker.main.telegram_bot.menu.enter_asset_count_menu.EnterAssetCountMenu;
 import com.assettracker.main.telegram_bot.menu.main_menu.MainMenu;
+import com.assettracker.main.telegram_bot.menu.my_assets_menu.MyAssetsMenu;
 import com.assettracker.main.telegram_bot.menu.my_profile_menu.MyProfileMenu;
 import com.assettracker.main.telegram_bot.menu.support_menu.SupportMenu;
 import com.assettracker.main.telegram_bot.menu.waiting_menu.WaitingMenu;
@@ -32,6 +33,7 @@ public class MessageEventHandler {
     private final ExecutorService es = Executors.newFixedThreadPool(10);
     private final UserService userService;
     private final UserQuestionService userQuestionService;
+    private final MyAssetsMenu myAssetsMenu;
     private final MainMenu mainMenu;
     private final BagMenu bagMenu;
     private final BagService bagService;
@@ -82,7 +84,7 @@ public class MessageEventHandler {
         if (assetService.isUserWaitingNumber(chatId)) {
             addAssetAndDeleteTmpUserCoin(event, chatId);
             enterAssetCountMenu.sendSuccess(chatId);
-            bagMenu.sendMenu(chatId);
+            myAssetsMenu.sendMenu(chatId);
         } else if (userService.isUserWriteQuestion(chatId)) {
             UUID userId = userService.findByChatId(chatId).orElseThrow().getId();
             userQuestionService.save(
