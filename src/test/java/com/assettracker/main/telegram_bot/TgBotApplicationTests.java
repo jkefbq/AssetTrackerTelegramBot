@@ -1,6 +1,5 @@
 package com.assettracker.main.telegram_bot;
 
-
 import com.assettracker.main.telegram_bot.database.repository.BagRepository;
 import com.assettracker.main.telegram_bot.database.repository.UserRepository;
 import com.assettracker.main.telegram_bot.database.service.DataInitializerService;
@@ -9,9 +8,14 @@ import com.assettracker.main.telegram_bot.events.ButtonEventHandler;
 import com.assettracker.main.telegram_bot.events.MessageEventHandler;
 import com.assettracker.main.telegram_bot.menu.bag_menu.BagMenu;
 import com.assettracker.main.telegram_bot.menu.main_menu.MainMenu;
+import com.assettracker.main.telegram_bot.menu.my_profile_menu.MyProfileMenu;
+import com.assettracker.main.telegram_bot.menu.waiting_menu.WaitingMenu;
+import com.assettracker.main.telegram_bot.service.AIService;
 import com.assettracker.main.telegram_bot.service.ButtonHandler;
+import com.assettracker.main.telegram_bot.service.MarketInfoKeeper;
 import com.assettracker.main.telegram_bot.service.MessageHandler;
 import com.assettracker.main.telegram_bot.service.UpdateConsumer;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -44,13 +48,12 @@ import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 
 @Profile("test")
 @SpringBootTest
+@Transactional
 @Testcontainers
 class TgBotApplicationTests {
 
-    @Autowired
-    BagRepository bagRepository;
-    @Autowired
-    UserRepository userRepository;
+    public static final String PSQL_IMG = "postgres:18-alpine";
+    public static final String REDIS_IMG = "redis:7-alpine";
 
     @MockitoSpyBean
     MessageHandler messageHandler;
@@ -67,23 +70,34 @@ class TgBotApplicationTests {
     MainMenu mainMenu;
     @MockitoBean
     BagMenu bagMenu;
+    @MockitoBean
+    MyProfileMenu profileMenu;
+    @MockitoBean
+    WaitingMenu waitingMenu;
+    @MockitoBean
+    MarketInfoKeeper marketInfoKeeper;
+    @MockitoBean
+    AIService aiService;
 
     @Autowired
+    BagRepository bagRepository;
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
     UpdateConsumer updateConsumer;
-
     @Autowired
     RedisTemplate<String, Object> redisTemplate;
 
     @Container
     private static final PostgreSQLContainer<?> POSTGRES_CONTAINER =
-            new PostgreSQLContainer<>("postgres:18-alpine")
+            new PostgreSQLContainer<>(PSQL_IMG)
                     .withDatabaseName("test")
                     .withUsername("test")
                     .withPassword("test");
 
     @Container
     private static final GenericContainer<?> REDIS_CONTAINER =
-            new GenericContainer<>("redis:7-alpine")
+            new GenericContainer<>(REDIS_IMG)
                     .waitingFor(Wait.forListeningPort())
                     .withExposedPorts(6379);
 
@@ -132,11 +146,6 @@ class TgBotApplicationTests {
         redisTemplate.delete(redisTemplate.keys("*"));
     }
 
-    @BeforeEach
-    public void cleanAllTables() {
-        //todo
-    }
-
     @Test
     void simulationButtonPressing_myBag() {
         var update = getUpdate_button();
@@ -149,6 +158,21 @@ class TgBotApplicationTests {
                     verify(buttonHandler).handle(update.getCallbackQuery());
                     verify(buttonEventHandler).handleMyBag(any());
                     verify(bagMenu).editMsgAndSendMenu(any(), any());
+                });
+    }
+
+    @Test
+    void simulationButtonPressing_myProfile() {
+        var update = getUpdate_button();
+        update.getCallbackQuery().setData(Button.MY_PROFILE.getCallbackData());
+
+        updateConsumer.consume(update);
+
+        await().atMost(3, TimeUnit.SECONDS)
+                .untilAsserted(() -> {
+                    verify(buttonHandler).handle(update.getCallbackQuery());
+                    verify(buttonEventHandler).handleMyProfile(any());
+                    verify(profileMenu).editMsgAndSendMenu(any(), any());
                 });
     }
 
@@ -167,6 +191,21 @@ class TgBotApplicationTests {
                     verify(mainMenu).sendMenu(any());
                     assertEquals(1, bagRepository.count());
                     assertEquals(1, userRepository.count());
+                });
+    }
+
+    @Test
+    public void simulationSendCommand_bag() {
+        var update = getUpdate_message();
+        update.getMessage().setText(com.assettracker.main.telegram_bot.events.Message.BAG.getText());
+
+        updateConsumer.consume(update);
+
+        await().atMost(3, TimeUnit.SECONDS)
+                .untilAsserted(() -> {
+                    verify(messageHandler).handle(update);
+                    verify(messageEventHandler).handleBag(any());
+                    verify(bagMenu).sendMenu(any());
                 });
     }
 }

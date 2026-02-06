@@ -116,7 +116,7 @@ public class ButtonEventHandlerTest {
 
         await()
                 .atMost(3, TimeUnit.SECONDS)
-                .untilAsserted(() -> verify(buttonEventHandler, times(1)).handleProfile(any()));
+                .untilAsserted(() -> verify(buttonEventHandler, times(1)).handleMyProfile(any()));
     }
 
     @Test

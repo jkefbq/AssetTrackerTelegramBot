@@ -1,8 +1,8 @@
 server:
   port: ${SERVER_PORT:8083}
 spring:
-  profiles:
-    active: test
+#  profiles:
+#    active: test
   datasource:
     url: test
     username: test
@@ -10,7 +10,7 @@ spring:
     driver-class-name: org.postgresql.Driver
   liquibase:
     enabled: true
-    change-log: classpath:db/changelog/db.changelog-master.yaml
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
   jpa:
     hibernate:
       ddl-auto: none
@@ -25,9 +25,3 @@ spring:
   output:
     ansi:
       enabled: ALWAYS
-
-# environment variables
-ADMIN_PASSWORD: test;
-GECKO_KEY: test;
-GEMINI_API_KEY: test;
-TG_KEY: test

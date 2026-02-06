@@ -127,7 +127,7 @@ public class ButtonEventHandler {
     }
 
     @EventListener(condition = "event.getButton().name() == 'MY_PROFILE'")
-    public void handleProfile(ButtonEvent event) {
+    public void handleMyProfile(ButtonEvent event) {
         waitingMenu.editMsgAndSendMenu(event.getChatId(), lastMessageService.getLastMessage(event.getChatId()));
         Integer lastMessageId = lastMessageService.getLastMessage(event.getChatId());
         profileMenu.editMsgAndSendMenu(event.getChatId(), lastMessageId);

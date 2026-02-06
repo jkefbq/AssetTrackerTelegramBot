@@ -6,4 +6,4 @@ CREATE TABLE IF NOT EXISTS assets (
     bag_id UUID,
     FOREIGN KEY (bag_id) REFERENCES bags(id)
 );
---rollback DROP TABLE users;
+--rollback DROP TABLE assets;

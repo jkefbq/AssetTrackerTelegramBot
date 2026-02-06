@@ -7,4 +7,4 @@ CREATE TABLE IF NOT EXISTS user_coins (
     chat_id BIGINT,
     asset_do VARCHAR(255)
 );
---rollback DROP TABLE users;
+--rollback DROP TABLE user_coins;

@@ -9,4 +9,4 @@ CREATE TABLE IF NOT EXISTS user_questions (
     user_id UUID,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
---rollback DROP TABLE users;
+--rollback DROP TABLE user_questions;
