@@ -11,8 +11,8 @@
     <groupId>com.asettracker</groupId>
     <artifactId>tg-bot</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>tg-bot</name>
-    <description>tg bot</description>
+    <name>telegram-bot</name>
+    <description>telegram-bot</description>
     <url/>
     <licenses>
         <license/>
@@ -144,7 +144,6 @@
             <scope>test</scope>
         </dependency>
 
-
         <dependency>
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
@@ -168,6 +167,13 @@
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-maven-plugin</artifactId>
             <version>5.0.1</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.resilience4j</groupId>
+            <artifactId>resilience4j-spring-boot2</artifactId>
+            <version>2.3.0</version>
             <scope>compile</scope>
         </dependency>
 

@@ -1,0 +1,55 @@
+services:
+  app:
+    container_name: crypto-app
+    image: app:01
+    restart: on-failure:3
+    environment:
+      - REDIS_HOST=cache
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
+      - GECKO_KEY=${GECKO_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - TG_KEY=${TG_KEY}
+      - DATABASE_HOST=database
+      - DATABASE_NAME=${DATABASE_NAME:-asset_tracker}
+      - DATABASE_URL=jdbc:postgresql://database:${DATABASE_PORT:-5432}/${DATABASE_NAME:-asset_tracker}
+      - DATABASE_USERNAME=${DATABASE_USERNAME:-postgres}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD:-postgres}
+    ports:
+      - '${SERVER_PORT:-8083}:${ADMIN_CONTAINER_PORT:-8080}'
+    networks:
+      - local_net
+    depends_on:
+      - database
+      - cache
+
+  database:
+    container_name: crypto-database
+    image: postgres:18-alpine
+    restart: on-failure:3
+    environment:
+      - POSTGRES_USER=${DATABASE_USERNAME:-postgres}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD:-postgres}
+      - POSTGRES_DB=${DATABASE_NAME:-asset_tracker}
+    ports:
+      - '5432:5432'
+    networks:
+      - local_net
+    volumes:
+      - pg-data:/var/lib/postgresql/18/docker
+
+  cache:
+    container_name: crypto-cache
+    image: redis:7-alpine
+    restart: on-failure:3
+    networks:
+      - local_net
+    volumes:
+      - redis-data:/data
+
+networks:
+  local_net:
+    driver: bridge
+
+volumes:
+  redis-data:
+  pg-data:

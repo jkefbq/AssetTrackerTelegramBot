@@ -1,0 +1,21 @@
+package com.cryptodemoaccount.menu.my_assets_menu;
+
+import com.cryptodemoaccount.events.Button;
+import lombok.Getter;
+import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+
+@Component
+public class CancelToAssetsMenuButton implements IMyAssetsMenuButton {
+
+    @Getter
+    private final String callbackData = Button.CANCEL_TO_ASSETS.getCallbackData();
+
+    @Override
+    public InlineKeyboardButton getButton() {
+        return InlineKeyboardButton.builder()
+                .text("Назад")
+                .callbackData(callbackData)
+                .build();
+    }
+}
