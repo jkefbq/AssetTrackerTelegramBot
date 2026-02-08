@@ -30,6 +30,8 @@
 
 ## Телеграм Бот
 
-<img src="https://github.com/jkefbq/AssetTrackerTelegramBot/raw/main/src/main/resources/static/main-menu-tg-bot.jpg" width="50%">
+<img src="https://github.com/user-attachments/assets/92293095-9a2f-4704-a8f4-232031fad7d4" width="49%"> <img src="https://github.com/jkefbq/AssetTrackerTelegramBot/raw/main/src/main/resources/static/bag-menu-choose-assets-tg-bot.jpg" width="50%">
+<img src="https://github.com/user-attachments/assets/efa41765-d76a-466c-8668-869e3b3777ac" width="50%"> <img src="https://github.com/user-attachments/assets/86e66fb3-3fca-447c-b922-4d7da944b9ec" width="49%">
+
 
 
