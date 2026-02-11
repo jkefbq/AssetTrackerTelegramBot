@@ -11,11 +11,12 @@ public class SolanaButton implements IAssetListMenuButton, IAsset {
 
     @Getter
     private final String callbackData = Coins.SOLANA.getIdsName();
+    private final String text = "SOL";
 
     @Override
     public InlineKeyboardButton getButton() {
         return InlineKeyboardButton.builder()
-                .text("SOL")
+                .text(text)
                 .callbackData(callbackData)
                 .build();
     }

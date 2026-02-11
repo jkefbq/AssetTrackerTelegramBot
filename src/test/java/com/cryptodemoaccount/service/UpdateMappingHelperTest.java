@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
-public class UpdateUtilsTest {
+public class UpdateMappingHelperTest {
 
     public Update getTooledUpdate_withMessage() {
         Update update = new Update();
@@ -48,7 +48,7 @@ public class UpdateUtilsTest {
     public void updateUtilsTest_getUser_UpdateWithMessage() {
         var update = getTooledUpdate_withMessage();
 
-        User user = UpdateUtils.getUser(update);
+        User user = UpdateMappingHelper.getUser(update);
 
         assertSame(update.getMessage().getFrom(), user);
     }
@@ -57,7 +57,7 @@ public class UpdateUtilsTest {
     public void updateUtilsTest_getUser_UpdateWithCallbackQuery() {
         var update = getTooledUpdate_withCallbackQuery();
 
-        User user = UpdateUtils.getUser(update);
+        User user = UpdateMappingHelper.getUser(update);
 
         assertSame(update.getCallbackQuery().getFrom(), user);
     }
@@ -67,7 +67,7 @@ public class UpdateUtilsTest {
         var update = getTooledUpdate_withMessage();
         update.getMessage().setText("text");
 
-        Optional<String> userInput = UpdateUtils.getUserInput(update);
+        Optional<String> userInput = UpdateMappingHelper.getUserInput(update);
 
         assertTrue(userInput.isPresent());
         assertEquals(userInput.get(), update.getMessage().getText());
@@ -78,7 +78,7 @@ public class UpdateUtilsTest {
         var update = getTooledUpdate_withMessage();
         update.getMessage().setText(null);
 
-        Optional<String> userInput = UpdateUtils.getUserInput(update);
+        Optional<String> userInput = UpdateMappingHelper.getUserInput(update);
 
         assertEquals(userInput, Optional.empty());
     }
@@ -87,7 +87,7 @@ public class UpdateUtilsTest {
     public void updateUtilsTest_getUserInput_withCallbackQuery() {
         var update = getTooledUpdate_withCallbackQuery();
 
-        Optional<String> userInput = UpdateUtils.getUserInput(update);
+        Optional<String> userInput = UpdateMappingHelper.getUserInput(update);
 
         assertEquals(userInput, Optional.empty());
     }
@@ -96,7 +96,7 @@ public class UpdateUtilsTest {
     public void updateUtilsTest_getChatId_withMessage() {
         var update = getTooledUpdate_withMessage();
 
-        Long chatId = UpdateUtils.getChatId(update);
+        Long chatId = UpdateMappingHelper.getChatId(update);
 
         assertNotNull(chatId);
         assertEquals(update.getMessage().getChatId(), chatId);
@@ -106,7 +106,7 @@ public class UpdateUtilsTest {
     public void updateUtilsTest_getChatId_withCallbackQuery() {
         var update = getTooledUpdate_withCallbackQuery();
 
-        Long chatId = UpdateUtils.getChatId(update);
+        Long chatId = UpdateMappingHelper.getChatId(update);
 
         assertNotNull(chatId);
         assertEquals(update.getCallbackQuery().getFrom().getId(), chatId);
@@ -117,7 +117,7 @@ public class UpdateUtilsTest {
         var update = getTooledUpdate_withMessage();
         update.getMessage().setText("text");
 
-        UpdateDto dto = UpdateUtils.toDto(update);
+        UpdateDto dto = UpdateMappingHelper.toDto(update);
 
         assertNotNull(dto);
         assertTrue(dto.getUserInput().isPresent());
@@ -130,7 +130,7 @@ public class UpdateUtilsTest {
     public void updateUtilsTest_toDto_withCallbackQuery() {
         var update = getTooledUpdate_withCallbackQuery();
 
-        UpdateDto dto = UpdateUtils.toDto(update);
+        UpdateDto dto = UpdateMappingHelper.toDto(update);
 
         assertNotNull(dto);
         assertTrue(dto.getUserInput().isEmpty());

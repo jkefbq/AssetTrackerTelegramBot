@@ -11,11 +11,12 @@ public class BNBButton implements IAssetListMenuButton, IAsset {
 
     @Getter
     private final String callbackData = Coins.BNB.getIdsName();
+    private final String text = "BNB";
 
     @Override
     public InlineKeyboardButton getButton() {
         return InlineKeyboardButton.builder()
-                .text("BNB")
+                .text(text)
                 .callbackData(callbackData)
                 .build();
     }

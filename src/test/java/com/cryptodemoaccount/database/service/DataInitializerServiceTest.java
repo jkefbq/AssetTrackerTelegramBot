@@ -2,8 +2,9 @@ package com.cryptodemoaccount.database.service;
 
 import com.cryptodemoaccount.database.dto.BagDto;
 import com.cryptodemoaccount.database.dto.UpdateDto;
+import com.cryptodemoaccount.database.dto.UserDto;
 import com.cryptodemoaccount.database.entity.BagEntity;
-import com.cryptodemoaccount.database.entity.UserEntity;
+import com.cryptodemoaccount.database.mapper.BagMapperImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -28,12 +29,14 @@ import static org.mockito.Mockito.when;
 public class DataInitializerServiceTest {
 
     @Captor
-    ArgumentCaptor<UserEntity> captor;
+    ArgumentCaptor<UserDto> captor;
 
     @Mock
     UserService userService;
     @Mock
     BagService bagService;
+    @Mock
+    BagMapperImpl bagMapper;
 
     @InjectMocks
     DataInitializerService initializer;
@@ -63,12 +66,12 @@ public class DataInitializerServiceTest {
 
     @Test
     public void initializeUserAndBagTest() {
-        when(bagService.createBag(any())).thenReturn(getBagDto());
-        when(bagService.toEntity(any())).thenReturn(getBagEntity());
+        when(bagService.create(any())).thenReturn(getBagDto());
+        when(bagMapper.toEntity(any())).thenReturn(getBagEntity());
         initializer.initializeUserAndBag(getUpdateDto());
 
-        verify(userService, times(1)).createUser(captor.capture());
-        verify(bagService, times(1)).createBag(any());
+        verify(userService, times(1)).create(captor.capture());
+        verify(bagService, times(1)).create(any());
         assertNotNull(captor.getValue().getBag());
     }
 }

@@ -31,6 +31,6 @@ public class MessageEventHandlerInterceptor {
             throw new IllegalStateException("cannot recognize " + joinPoint.getSignature().getName() +
                     " method args=" + args + " [lost ButtonEvent or AssetButtonEvent type]");
         }
-        assetService.deleteTmpUserCoin(chatId);
+        assetService.deleteByChatId(chatId);
     }
 }

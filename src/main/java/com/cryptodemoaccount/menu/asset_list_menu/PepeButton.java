@@ -11,11 +11,12 @@ public class PepeButton implements IAssetListMenuButton, IAsset {
 
     @Getter
     private final String callbackData = Coins.PEPE.getIdsName();
+    private final String text = "PEPE";
 
     @Override
     public InlineKeyboardButton getButton() {
         return InlineKeyboardButton.builder()
-                .text("PEPE")
+                .text(text)
                 .callbackData(callbackData)
                 .build();
     }

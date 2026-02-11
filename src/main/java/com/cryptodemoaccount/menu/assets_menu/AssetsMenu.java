@@ -77,8 +77,6 @@ public class AssetsMenu implements IMenu {
                      888    .o   888 .  o.  )88b \s
                      `Y8bod8P'   "888"  8""888P' \s
                 </code><blockquote>Твоя панель управления активами,
-                какая стратегия торговли сегодня?
-                </blockquote>
-                """;
+                какая стратегия торговли сегодня?</blockquote>""";
     }
 }

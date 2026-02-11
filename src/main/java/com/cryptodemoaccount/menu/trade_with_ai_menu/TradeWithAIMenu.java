@@ -49,9 +49,7 @@ public class TradeWithAIMenu implements IMenu {
                 ===     ===   ===    ===  === ===
                 </code><blockquote>AI ассистент поможет вам в вопросах
                 связанных с торговлей опираясь на
-                ваши активы и ситуацию на рынке.
-                </blockquote>
-                """;
+                ваши активы и ситуацию на рынке.</blockquote>""";
     }
 
     @SneakyThrows

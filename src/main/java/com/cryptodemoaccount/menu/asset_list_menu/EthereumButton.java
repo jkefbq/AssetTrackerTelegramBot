@@ -11,11 +11,12 @@ public class EthereumButton implements IAssetListMenuButton, IAsset {
 
     @Getter
     private final String callbackData = Coins.ETHEREUM.getIdsName();
+    private final String text = "ETH";
 
     @Override
     public InlineKeyboardButton getButton() {
         return InlineKeyboardButton.builder()
-                .text("ETH")
+                .text(text)
                 .callbackData(callbackData)
                 .build();
     }

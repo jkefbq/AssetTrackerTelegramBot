@@ -45,8 +45,8 @@ public class UserServiceTest {
     }
 
     @Test
-    public void createUserTest() {
-        userService.saveUser(getUserDto());
+    public void createTest() {
+        userService.create(getUserDto());
         verify(userRepository, times(1)).save(any());
     }
 

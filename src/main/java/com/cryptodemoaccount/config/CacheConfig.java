@@ -23,6 +23,8 @@ import java.time.Duration;
 @EnableCaching
 public class CacheConfig {
 
+    private static final Duration ALL_ENTRY_TTL = Duration.ofMinutes(2);
+
     @Bean
     public GenericJackson2JsonRedisSerializer jsonRedisSerializer() {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -56,7 +58,7 @@ public class CacheConfig {
             GenericJackson2JsonRedisSerializer jsonSerializer
     ) {
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(2))
+                .entryTtl(ALL_ENTRY_TTL)
                 .disableCachingNullValues()
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(jsonSerializer));

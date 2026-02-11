@@ -8,7 +8,7 @@ import com.cryptodemoaccount.database.service.UserService;
 import com.cryptodemoaccount.menu.ai_advice_menu.AIAdviceMenu;
 import com.cryptodemoaccount.menu.asset_list_menu.AssetDo;
 import com.cryptodemoaccount.menu.asset_list_menu.AssetListMenu;
-import com.cryptodemoaccount.menu.asset_list_menu.UserCoin;
+import com.cryptodemoaccount.menu.asset_list_menu.UserCoinDto;
 import com.cryptodemoaccount.menu.asset_statistics_menu.AssetStatisticsMenu;
 import com.cryptodemoaccount.menu.assets_menu.AssetsMenu;
 import com.cryptodemoaccount.menu.bag_menu.BagMenu;
@@ -65,39 +65,41 @@ public class ButtonEventHandler {
     public void handleCreateAsset(ButtonEvent event) {
         Integer lastMessageId = lastMessageService.getLastMessage(event.getChatId());
         assetListMenu.editMsgAndSendMenu(event.getChatId(), lastMessageId);
-        assetService.saveTmpUserCoin(new UserCoin(event.getChatId(), AssetDo.CREATE));
+        UserCoinDto dto = new UserCoinDto(event.getChatId(), AssetDo.CREATE);
+        assetService.create(dto);
     }
 
     @EventListener(condition = "event.getButton().name() == 'UPDATE_ASSET'")
     public void handleUpdateAsset(ButtonEvent event) {
         Integer lastMessageId = lastMessageService.getLastMessage(event.getChatId());
         assetListMenu.editMsgAndSendMenu(event.getChatId(), lastMessageId);
-        assetService.saveTmpUserCoin(new UserCoin(event.getChatId(), AssetDo.UPDATE));
+        UserCoinDto dto = new UserCoinDto(event.getChatId(), AssetDo.UPDATE);
+        assetService.create(dto);
     }
 
     @EventListener(condition = "event.getButton().name() == 'FORCE_UPDATE_ASSET'")
     public void handleForceUpdateAsset(ButtonEvent event) {
-        UserCoin tmp = assetService.getTmpUserCoin(event.getChatId());
+        UserCoinDto tmp = assetService.findByChatId(event.getChatId()).orElseThrow();
         tmp.setAssetDo(AssetDo.UPDATE);
-        assetService.saveTmpUserCoin(tmp);
+        assetService.create(tmp);
         Integer lastMessageId = lastMessageService.getLastMessage(event.getChatId());
         enterAssetCountMenu.editMsgAndSendMenu(event.getChatId(), lastMessageId);
     }
 
     @EventListener(condition = "event.getButton().name() == 'FORCE_CREATE_ASSET'")
     public void handleForceCreateAsset(ButtonEvent event) {
-        UserCoin tmp = assetService.getTmpUserCoin(event.getChatId());
+        UserCoinDto tmp = assetService.findByChatId(event.getChatId()).orElseThrow();
         tmp.setAssetDo(AssetDo.CREATE);
-        assetService.saveTmpUserCoin(tmp);
+        assetService.create(tmp);
         Integer lastMessageId = lastMessageService.getLastMessage(event.getChatId());
         enterAssetCountMenu.editMsgAndSendMenu(event.getChatId(), lastMessageId);
     }
 
     @EventListener(condition = "event.getButton().name() == 'CREATE_ASSET_AFTER_TRY_DELETE'")
     public void handleCreateAssetAfterTryDelete(ButtonEvent event) {
-        UserCoin tmp = assetService.getTmpUserCoin(event.getChatId());
+        UserCoinDto tmp = assetService.findByChatId(event.getChatId()).orElseThrow();
         tmp.setAssetDo(AssetDo.CREATE);
-        assetService.saveTmpUserCoin(tmp);
+        assetService.create(tmp);
         Integer lastMessageId = lastMessageService.getLastMessage(event.getChatId());
         enterAssetCountMenu.editMsgAndSendMenu(event.getChatId(), lastMessageId);
     }
@@ -106,14 +108,15 @@ public class ButtonEventHandler {
     public void handleCancelToMyAssets(ButtonEvent event) {
         Integer lastMessageId = lastMessageService.getLastMessage(event.getChatId());
         myAssetsMenu.editMsgAndSendMenu(event.getChatId(), lastMessageId);
-        assetService.deleteTmpUserCoin(event.getChatId());
+        assetService.deleteByChatId(event.getChatId());
     }
 
     @EventListener(condition = "event.getButton().name() == 'DELETE_ASSET'")
     public void handleDeleteAsset(ButtonEvent event) {
         Integer lastMessageId = lastMessageService.getLastMessage(event.getChatId());
         assetListMenu.editMsgAndSendMenu(event.getChatId(), lastMessageId);
-        assetService.saveTmpUserCoin(new UserCoin(event.getChatId(), AssetDo.DELETE));
+        UserCoinDto dto = new UserCoinDto(event.getChatId(), AssetDo.DELETE);
+        assetService.create(dto);
     }
 
     @EventListener(condition = "event.getButton().name() == 'CANCEL_TO_MENU'")
@@ -121,7 +124,7 @@ public class ButtonEventHandler {
         if (userService.isUserWriteQuestion(event.getChatId())) {
             var user = userService.findByChatId(event.getChatId()).orElseThrow();
             user.setStatus(UserStatus.FREE);
-            userService.saveUser(user);
+            userService.create(user);
         }
         Integer lastMessageId = lastMessageService.getLastMessage(event.getChatId());
         mainMenu.editMsgAndSendMenu(event.getChatId(), lastMessageId);
@@ -196,20 +199,21 @@ public class ButtonEventHandler {
 
     @EventListener(condition = "event.getButton().name() == 'SUPPORT'")
     public void handleSupport(ButtonEvent event) {
+        Integer lastMessageId = lastMessageService.getLastMessage(event.getChatId());
         var user = userService.findByChatId(event.getChatId()).orElseThrow();
         user.setStatus(UserStatus.WRITING_QUESTION);
-        userService.saveUser(user);
-        supportMenu.sendMenu(event.getChatId());
+        userService.update(user);
+        supportMenu.editMsgAndSendMenu(event.getChatId(), lastMessageId);
     }
 
     @EventListener
     public void handleAnyAssetButton(AssetButtonEvent event) {
-        var tmpCoin = assetService.getTmpUserCoin(event.getChatId());
+        var tmpCoin = assetService.findByChatId(event.getChatId()).orElseThrow();
         var lastMessageId = lastMessageService.getLastMessage(event.getChatId());
 
         tmpCoin.setCoin(event.getCoin());
         waitingMenu.editMsgAndSendMenu(event.getChatId(), lastMessageService.getLastMessage(event.getChatId()));
-        assetService.saveTmpUserCoin(tmpCoin);
+        assetService.create(tmpCoin);
         processAsset(event, tmpCoin, lastMessageId);
     }
 
@@ -218,7 +222,7 @@ public class ButtonEventHandler {
         bagMenu.sendMenu(event.getChatId());
     }
 
-    private void processAsset(AssetButtonEvent event, UserCoin tmpCoin, Integer lastMessageId) {
+    private void processAsset(AssetButtonEvent event, UserCoinDto tmpCoin, Integer lastMessageId) {
         boolean hasCoin = bagService.hasCoin(event.getChatId(), event.getCoin());
 
         if (tmpCoin.getAssetDo() == AssetDo.CREATE && hasCoin) {
@@ -234,9 +238,9 @@ public class ButtonEventHandler {
         }
     }
 
-    private void deleteAssetAndSendSuccess(AssetButtonEvent event, UserCoin tmpCoin, Integer lastMessageId) {
-        bagService.deleteAsset(tmpCoin.getChatId(), event.getCoin());
-        assetService.deleteTmpUserCoin(tmpCoin.getChatId());
+    private void deleteAssetAndSendSuccess(AssetButtonEvent event, UserCoinDto tmpCoin, Integer lastMessageId) {
+        bagService.deleteByChatId(tmpCoin.getChatId(), event.getCoin());
+        assetService.deleteByChatId(tmpCoin.getChatId());
         incorrectDeleteMenu.EditMsgAndSendSuccess(tmpCoin.getChatId(), lastMessageId);
         myAssetsMenu.sendMenu(event.getChatId());
     }

@@ -1,11 +1,11 @@
 package com.cryptodemoaccount.service;
 
+import com.cryptodemoaccount.config.YamlConfig;
 import com.cryptodemoaccount.menu.asset_list_menu.Coins;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -22,19 +22,21 @@ import java.util.Set;
 @Service
 public class MarketInfoKeeper {
 
-    private final String KEY_HEADER = "x-cg-demo-api-key";
+    private final String API_KEY_HEADER;
     private final String GECKO_KEY;
     private final String SIMPLE_PRICE_URL;
+    private final String CURRENCIES_PARAM = "vs_currencies=usd";
+    private final String CURRENCIES_JSON = "usd";
+    private final String PRECISION = "precision=10";
+    private final String CHANGES_PARAM = "include_24hr_change=true";
+    private final String CHANGES_JSON = "usd_24h_change";
     private final ObjectMapper mapper;
     private final RestTemplate restTemplate;
 
-    public MarketInfoKeeper(
-            @Value("${GECKO_KEY}") String GECKO_KEY,
-            @Value("${api.url.simple-price}") String SIMPLE_PRICE_URL,
-            ObjectMapper mapper, RestTemplate restTemplate
-    ) {
-        this.GECKO_KEY = GECKO_KEY;
-        this.SIMPLE_PRICE_URL = SIMPLE_PRICE_URL;
+    public MarketInfoKeeper(YamlConfig config, ObjectMapper mapper, RestTemplate restTemplate) {
+        this.API_KEY_HEADER = config.getApi().getGecko().getHeaders().getApiKeyHeader();
+        this.GECKO_KEY = config.getApi().getGecko().getKey();
+        this.SIMPLE_PRICE_URL = config.getApi().getGecko().getUrls().getSimplePrice();
         this.mapper = mapper;
         this.restTemplate = restTemplate;
     }
@@ -43,10 +45,10 @@ public class MarketInfoKeeper {
         String coinsIdsString = String.join(",", coins.stream().map(Coins::getIdsName).toList());
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add(KEY_HEADER, GECKO_KEY);
+        headers.add(API_KEY_HEADER, GECKO_KEY);
         HttpEntity<String> http = new HttpEntity<>(headers);
         ResponseEntity<String> response = restTemplate.exchange(
-                SIMPLE_PRICE_URL + "?vs_currencies=usd&precision=10&ids=" + coinsIdsString,
+                SIMPLE_PRICE_URL + "?" + CURRENCIES_PARAM + "&" + PRECISION + "&ids=" + coinsIdsString,
                 HttpMethod.GET,
                 http,
                 String.class
@@ -59,10 +61,11 @@ public class MarketInfoKeeper {
         String coinsIdsString = String.join(",", coins.stream().map(Coins::getIdsName).toList());
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add(KEY_HEADER, GECKO_KEY);
+        headers.add(API_KEY_HEADER, GECKO_KEY);
         HttpEntity<String> http = new HttpEntity<>(headers);
         ResponseEntity<String> response = restTemplate.exchange(
-                SIMPLE_PRICE_URL + "?vs_currencies=usd&precision=10&include_24hr_change=true&ids=" + coinsIdsString,
+                SIMPLE_PRICE_URL + "?" + CURRENCIES_PARAM + "&" + PRECISION +
+                        "&" + CHANGES_PARAM + "&ids=" + coinsIdsString,
                 HttpMethod.GET,
                 http,
                 String.class
@@ -77,10 +80,9 @@ public class MarketInfoKeeper {
 
         JsonNode jsonNode = mapper.readTree(json);
         jsonNode.forEachEntry((coinIds, node) -> {
-            result.put(
-                    Coins.getCoinForIds(coinIds),
+            result.put(Coins.getCoinForIds(coinIds),
                     Map.entry(
-                            node.get("usd_24h_change").decimalValue(), node.get("usd").decimalValue()
+                            node.get(CHANGES_JSON).decimalValue(), node.get(CURRENCIES_JSON).decimalValue()
                     )
             );
         });
@@ -93,7 +95,7 @@ public class MarketInfoKeeper {
 
         JsonNode jsonNode = mapper.readTree(json);
         jsonNode.forEachEntry((coinIds, node) ->
-                result.put(Coins.getCoinForIds(coinIds), node.get("usd").decimalValue()));
+                result.put(Coins.getCoinForIds(coinIds), node.get(CURRENCIES_JSON).decimalValue()));
         return result;
     }
 }

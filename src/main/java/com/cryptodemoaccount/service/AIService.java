@@ -1,8 +1,8 @@
 package com.cryptodemoaccount.service;
 
+import com.cryptodemoaccount.config.YamlConfig;
 import com.cryptodemoaccount.menu.asset_list_menu.Coins;
 import com.google.genai.Client;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -28,8 +28,10 @@ public class AIService {
         }
     }
 
-    public AIService(@Value("${GEMINI_API_KEY}") String GEMINI_API_KEY) {
-        client = Client.builder().apiKey(GEMINI_API_KEY).build();
+    public AIService(YamlConfig config) {
+        client = Client.builder()
+                .apiKey(config.getApi().getGemini().getKey())
+                .build();
     }
 
     public String getAdvice(Map<Coins, BigDecimal> coins) {

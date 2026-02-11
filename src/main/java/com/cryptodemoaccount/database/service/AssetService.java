@@ -1,40 +1,65 @@
 package com.cryptodemoaccount.database.service;
 
-import com.cryptodemoaccount.menu.asset_list_menu.UserCoin;
 import com.cryptodemoaccount.database.entity.UserCoinEntity;
+import com.cryptodemoaccount.database.mapper.UserCoinMapper;
 import com.cryptodemoaccount.database.repository.UserCoinRepository;
+import com.cryptodemoaccount.menu.asset_list_menu.UserCoinDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
 @AllArgsConstructor
-public class AssetService {
+public class AssetService implements CrudService<UserCoinDto> {
 
     private final UserCoinRepository userCoinRepository;
+    private final UserCoinMapper mapper;
 
+    @Override
     @Transactional
-    public void saveTmpUserCoin(UserCoin coin) {
-        userCoinRepository.save(new UserCoinEntity(coin));
-        log.info("save tmp UserCoin={}", coin);
+    public UserCoinDto create(UserCoinDto coin) {
+        log.info("save tmp UserCoinDto={}", coin);
+        return mapper.toDto(
+                userCoinRepository.save(mapper.toEntity(coin))
+        );
     }
 
+    @Override
     @Transactional
-    public UserCoin getTmpUserCoin(Long chatId) {
-        UserCoinEntity entity = userCoinRepository.findByChatId(chatId).orElseThrow();
-        return new UserCoin(entity.getId(), entity.getCoin(), entity.getChatId(), entity.getAssetDo());
+    public Optional<UserCoinDto> findByChatId(Long chatId) {
+        return userCoinRepository.findByChatId(chatId).map(mapper::toDto);
     }
 
+    @Override
     @Transactional
-    public void deleteTmpUserCoin(Long chatId) {
+    public UserCoinDto update(UserCoinDto coin) {
+        log.info("save tmp UserCoinDto={}", coin);
+        return mapper.toDto(
+                userCoinRepository.save(mapper.toEntity(coin))
+        );
+    }
+
+    @Override
+    @Transactional
+    public void deleteByChatId(Long chatId) {
+        log.info("delete tmp UserCoinDto with chatId={}", chatId);
         userCoinRepository.deleteByChatId(chatId);
-        log.info("delete tmp UserCoin with chatId={}", chatId);
     }
 
     @Transactional
     public boolean isUserWaitingNumber(Long chatId) {
         return userCoinRepository.findByChatId(chatId).isPresent();
+    }
+
+    public UserCoinDto toDto(UserCoinEntity entity) {
+        return mapper.toDto(entity);
+    }
+
+    public UserCoinEntity toEntity(UserCoinDto coin) {
+        return mapper.toEntity(coin);
     }
 }

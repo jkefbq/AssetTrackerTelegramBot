@@ -11,11 +11,12 @@ public class DogecoinButton implements IAssetListMenuButton, IAsset {
 
     @Getter
     private final String callbackData = Coins.DOGECOIN.getIdsName();
+    private final String text = "DOGE";
 
     @Override
     public InlineKeyboardButton getButton() {
         return InlineKeyboardButton.builder()
-                .text("DOGE")
+                .text(text)
                 .callbackData(callbackData)
                 .build();
     }

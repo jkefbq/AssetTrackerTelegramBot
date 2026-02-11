@@ -11,11 +11,12 @@ public class TronButton implements IAssetListMenuButton, IAsset {
 
     @Getter
     private final String callbackData = Coins.TRON.getIdsName();
+    private final String text = "TRX";
 
     @Override
     public InlineKeyboardButton getButton() {
         return InlineKeyboardButton.builder()
-                .text("TRX")
+                .text(text)
                 .callbackData(callbackData)
                 .build();
     }

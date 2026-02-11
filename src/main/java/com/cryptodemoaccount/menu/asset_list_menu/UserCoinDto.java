@@ -1,5 +1,6 @@
 package com.cryptodemoaccount.menu.asset_list_menu;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,31 +9,28 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 @Getter
-public class UserCoin implements Serializable {
+public class UserCoinDto implements Serializable {
 
+    @Setter
     private UUID id;
-    private final Long chatId;
+    @Setter
+    private Long chatId;
     @Setter
     private Coins coin;
     private BigDecimal count;
     @Setter
     private AssetDo assetDo;
 
-
-    public UserCoin(UUID id, Coins coin, Long chatId, AssetDo assetDo) {
+    @Builder
+    public UserCoinDto(UUID id, Long chatId, Coins coin, BigDecimal count, AssetDo assetDo) {
         this.id = id;
         this.chatId = chatId;
         this.coin = coin;
+        this.count = count;
         this.assetDo = assetDo;
     }
 
-    public UserCoin(Coins coin, Long chatId, AssetDo assetDo) {
-        this.chatId = chatId;
-        this.coin = coin;
-        this.assetDo = assetDo;
-    }
-
-    public UserCoin(Long chatId, AssetDo assetDo) {
+    public UserCoinDto(Long chatId, AssetDo assetDo) {
         this.chatId = chatId;
         this.assetDo = assetDo;
     }

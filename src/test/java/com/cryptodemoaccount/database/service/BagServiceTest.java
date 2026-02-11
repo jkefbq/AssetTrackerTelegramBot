@@ -1,7 +1,6 @@
 package com.cryptodemoaccount.database.service;
 
 import com.cryptodemoaccount.database.dto.BagDto;
-import com.cryptodemoaccount.database.entity.BagEntity;
 import com.cryptodemoaccount.database.mapper.BagMapperImpl;
 import com.cryptodemoaccount.database.repository.BagRepository;
 import com.cryptodemoaccount.service.MarketInfoKeeper;
@@ -11,6 +10,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -29,43 +32,37 @@ public class BagServiceTest {
     @InjectMocks
     BagService bagService;
 
-    public BagEntity getBagEntity() {
-        return new BagEntity(ThreadLocalRandom.current().nextLong());
+    public BagDto getBagDto() {
+        return BagDto.builder()
+                .id(UUID.randomUUID())
+                .chatId(ThreadLocalRandom.current().nextLong())
+                .createdAt(LocalDate.now())
+                .totalCost(BigDecimal.ZERO)
+                .assets(new HashMap<>())
+                .build();
     }
 
     @Test
-    public void createBagTest() {
-        var bag = getBagEntity();
+    public void createTest() {
+        var bag = getBagDto();
 
-        bagService.createBag(bag);
+        bagService.create(bag);
 
-        verify(bagRepository, times(1)).save(bag);
+        verify(bagRepository, times(1)).save(any());
     }
 
     @Test
     public void updateBagTest() {
-        var bag = getBagEntity();
+        var bag = getBagDto();
 
-        bagService.updateBag(bag);
+        bagService.update(bag);
 
-        verify(bagRepository, times(1)).save(bag);
+        verify(bagRepository, times(1)).save(any());
     }
 
     @Test
     public void findByChatIdTest() {
         bagService.findByChatId(1L);
         verify(bagRepository, times(1)).findByChatId(1L);
-    }
-
-    @Test
-    public void toDtoTest() {
-        bagService.toDto(getBagEntity());
-        verify(bagMapper).toDto(any());
-    }
-
-    @Test
-    public void toEntityTest() {
-        bagService.toEntity(new BagDto());
-        verify(bagMapper).toEntity(any());
     }
 }

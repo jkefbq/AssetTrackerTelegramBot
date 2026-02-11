@@ -2,7 +2,7 @@ package com.cryptodemoaccount.database.entity;
 
 import com.cryptodemoaccount.menu.asset_list_menu.AssetDo;
 import com.cryptodemoaccount.menu.asset_list_menu.Coins;
-import com.cryptodemoaccount.menu.asset_list_menu.UserCoin;
+import com.cryptodemoaccount.menu.asset_list_menu.UserCoinDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -40,12 +40,12 @@ public class UserCoinEntity {
     @Column(name = "chat_id")
     private Long chatId;
 
-    public UserCoinEntity(UserCoin userCoin) {
-        this.id = userCoin.getId();
-        this.coin = userCoin.getCoin();
-        this.count = userCoin.getCount();
-        this.chatId = userCoin.getChatId();
-        this.assetDo = userCoin.getAssetDo();
+    public UserCoinEntity(UserCoinDto userCoinDto) {
+        this.id = userCoinDto.getId();
+        this.coin = userCoinDto.getCoin();
+        this.count = userCoinDto.getCount();
+        this.chatId = userCoinDto.getChatId();
+        this.assetDo = userCoinDto.getAssetDo();
     }
 }
 

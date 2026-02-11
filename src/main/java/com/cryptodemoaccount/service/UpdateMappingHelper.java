@@ -8,7 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.User;
 
 import java.util.Optional;
 
-public class UpdateUtils {
+public class UpdateMappingHelper {
 
     private static final UpdateMapper mapper = new UpdateMapperImpl();
 

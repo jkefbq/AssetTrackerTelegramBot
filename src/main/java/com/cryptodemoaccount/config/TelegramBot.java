@@ -1,7 +1,6 @@
 package com.cryptodemoaccount.config;
 
 import com.cryptodemoaccount.service.UpdateConsumer;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.longpolling.interfaces.LongPollingUpdateConsumer;
 import org.telegram.telegrambots.longpolling.starter.SpringLongPollingBot;
@@ -12,9 +11,9 @@ public class TelegramBot implements SpringLongPollingBot {
     private final String TG_TOKEN;
     private final UpdateConsumer updateConsumer;
 
-    public TelegramBot(@Value("${TG_KEY}") String tgToken, UpdateConsumer updateConsumer) {
+    public TelegramBot(YamlConfig config, UpdateConsumer updateConsumer) {
         this.updateConsumer = updateConsumer;
-        this.TG_TOKEN = tgToken;
+        this.TG_TOKEN = config.getApi().getTelegram().getKey();
     }
 
     @Override

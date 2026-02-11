@@ -11,11 +11,12 @@ public class XRPButton implements IAssetListMenuButton, IAsset {
 
     @Getter
     private final String callbackData = Coins.XRP.getIdsName();
+    private final String text = "XRP";
 
     @Override
     public InlineKeyboardButton getButton() {
         return InlineKeyboardButton.builder()
-                .text("XRP")
+                .text(text)
                 .callbackData(callbackData)
                 .build();
     }

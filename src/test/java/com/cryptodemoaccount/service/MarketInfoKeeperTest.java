@@ -1,5 +1,6 @@
 package com.cryptodemoaccount.service;
 
+import com.cryptodemoaccount.config.YamlConfig;
 import com.cryptodemoaccount.menu.asset_list_menu.Coins;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
@@ -25,10 +26,28 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 
 public class MarketInfoKeeperTest {
 
+    private static final String API_KEY_HEADER = "x-cg-demo-api-key";
+    private static final String MOCK_URL = "https://test-url";
     private final RestTemplate restTemplate = new RestTemplate();
     private final MockRestServiceServer server = MockRestServiceServer.createServer(restTemplate);
+    private final YamlConfig marketInfoConfig = getYamlConfig();
     private final MarketInfoKeeper marketInfoKeeper =
-            new MarketInfoKeeper("key", "https://test-url", new ObjectMapper(), restTemplate);
+            new MarketInfoKeeper(marketInfoConfig, new ObjectMapper(), restTemplate);
+
+    private YamlConfig getYamlConfig() {
+        YamlConfig config = new YamlConfig();
+        YamlConfig.Api api = new YamlConfig.Api();
+        YamlConfig.Api.Gecko gecko = new YamlConfig.Api.Gecko();
+        YamlConfig.Api.Gecko.Headers headers = new YamlConfig.Api.Gecko.Headers();
+        YamlConfig.Api.Gecko.Urls urls = new YamlConfig.Api.Gecko.Urls();
+        headers.setApiKeyHeader(API_KEY_HEADER);
+        urls.setSimplePrice(MOCK_URL);
+        gecko.setHeaders(headers);
+        gecko.setUrls(urls);
+        api.setGecko(gecko);
+        config.setApi(api);
+        return config;
+    }
 
     private static String getcoinPricesResponseJson() {
         return "{\n\"bitcoin\":{\n\"usd\":80252.3952382432\n},\n\"pepe\":{\n\"usd\":0.0000010472\n}," +

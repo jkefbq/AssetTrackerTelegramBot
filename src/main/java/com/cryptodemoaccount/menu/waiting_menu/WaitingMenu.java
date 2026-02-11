@@ -5,6 +5,7 @@ import com.cryptodemoaccount.service.LastMessageService;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
@@ -23,7 +24,8 @@ public class WaitingMenu implements IMenu {
         EditMessageText editMessageText = EditMessageText.builder()
                 .chatId(chatId)
                 .messageId(messageId)
-                .text("Секунду...")
+                .text("<code>Секунду...</code>")
+                .parseMode(ParseMode.HTML)
                 .build();
         telegramClient.execute(editMessageText);
         lastMessageService.setLastMessage(chatId, editMessageText.getMessageId());
@@ -34,7 +36,8 @@ public class WaitingMenu implements IMenu {
     public void sendMenu(Long chatId) {
         SendMessage sendMessage = SendMessage.builder()
                 .chatId(chatId)
-                .text("Секунду...")
+                .text("<code>Секунду...</code>")
+                .parseMode(ParseMode.HTML)
                 .build();
         Message msg = telegramClient.execute(sendMessage);
         lastMessageService.setLastMessage(chatId, msg.getMessageId());

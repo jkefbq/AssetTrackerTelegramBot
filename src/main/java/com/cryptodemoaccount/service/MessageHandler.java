@@ -20,7 +20,7 @@ public class MessageHandler {
 
     public void handle(Update update) {
         String text = update.getMessage().getText().trim();
-        UpdateDto dto = UpdateUtils.toDto(update);
+        UpdateDto dto = UpdateMappingHelper.toDto(update);
         try {
             Message msg = Message.parseText(text);
             log.info("Command='{}' was successfully recognized, about to publishing event with message='{}'", text, msg);

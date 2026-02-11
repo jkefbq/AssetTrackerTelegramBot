@@ -21,8 +21,10 @@ public class UserQuestionDto {
     private UUID userId;
     private String question;
     private Integer version;
-    private LocalDateTime createdAt;
-    private Boolean replied;
+    @Builder.Default
+    private LocalDateTime createdAt = LocalDateTime.now();
+    @Builder.Default
+    private Boolean replied = false;
 
     public UserQuestionDto(String question, UUID userId) {
         this.question = question;

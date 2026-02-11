@@ -1,5 +1,6 @@
 package com.cryptodemoaccount.database.service;
 
+import com.cryptodemoaccount.config.YamlConfig;
 import com.cryptodemoaccount.config.security.AdminUserService;
 import com.cryptodemoaccount.config.security.SecurityConfig;
 import com.cryptodemoaccount.database.dto.UserQuestionDto;
@@ -7,8 +8,8 @@ import com.cryptodemoaccount.database.mapper.UserQuestionMapperImpl;
 import com.cryptodemoaccount.database.repository.UserQuestionRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Answers;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -35,26 +36,26 @@ public class UserQuestionServiceTest {
     @MockitoBean
     UserQuestionRepository questionRepository;
 
-    @Autowired
-    ApplicationContext applicationContext;
+    @MockitoBean(answers = Answers.RETURNS_MOCKS)
+    YamlConfig config;
 
     @Test
-    public void saveTest() {
-        questionService.save(new UserQuestionDto());
+    public void createTest() {
+        questionService.create(new UserQuestionDto());
 
         verify(questionRepository, times(1)).save(any());
     }
 
     @Test
-    public void findByUserIdTest_unauthorize() {
-        assertThrows(AuthenticationCredentialsNotFoundException.class, () -> questionService.findByUserId(UUID.randomUUID()));
+    public void findAllByUserIdTest_unauthorize() {
+        assertThrows(AuthenticationCredentialsNotFoundException.class, () -> questionService.findAllByUserId(UUID.randomUUID()));
         verify(questionRepository, never()).findByUserId(any());
     }
 
     @Test
     @WithMockUser(roles = "ADMIN")
-    public void findByUserIdTest_admin() {
-        questionService.findByUserId(UUID.randomUUID());
+    public void findAllByUserIdTest_admin() {
+        questionService.findAllByUserId(UUID.randomUUID());
 
         verify(questionRepository, times(1)).findByUserId(any());
     }

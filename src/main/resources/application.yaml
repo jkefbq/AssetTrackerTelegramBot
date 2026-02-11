@@ -1,10 +1,8 @@
 server:
-  port: ${SERVER_PORT:8080}
+  port: ${CONTAINER_PORT:8080}
 spring:
-  profiles:
-    active: dev
   datasource:
-    url: jdbc:postgresql://${DATABASE_HOST}:${DATABASE_PORT:5432}/${DATABASE_NAME:asset_tracker}
+    url: jdbc:postgresql://${DATABASE_HOST}:5432/${DATABASE_NAME:asset_tracker}
     username: ${DATABASE_USERNAME:postgres}
     password: ${DATABASE_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
@@ -29,12 +27,24 @@ spring:
   output:
     ansi:
       enabled: ALWAYS
-api:
-  url:
-    simple-price: "https://api.coingecko.com/api/v3/simple/price"
 resilience4j.ratelimiter:
   instances:
     ai-advice:
       limitForPeriod: 1
       limit-refresh-period: 240s
       timeoutDuration: 0s
+
+app:
+  admin:
+    password: ${ADMIN_PASSWORD}
+  api:
+    gecko:
+      key: ${GECKO_API_KEY}
+      headers:
+        api-key-header: "x-cg-demo-api-key"
+      urls:
+        simple-price: "https://api.coingecko.com/api/v3/simple/price"
+    gemini:
+      key: ${GEMINI_API_KEY}
+    telegram:
+      key: ${TELEGRAM_API_KEY}

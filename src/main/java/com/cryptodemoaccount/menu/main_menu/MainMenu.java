@@ -56,10 +56,7 @@ public class MainMenu implements IMenu {
                 [ `.-. .-. |`'_\\ : [  | [ `.-. |  \s
                  | | | | | |// | |, | |  | | | |  \s
                 [___||_||__]\\'-;__/[___][__| |__] \s
-                </code>
-                <blockquote>Твои активы под присмотром,
-                что делаем?
-                </blockquote>
-                """;
+                </code><blockquote>Твои активы под присмотром,
+                что делаем?</blockquote>""";
     }
 }

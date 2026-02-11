@@ -1,6 +1,6 @@
 package com.cryptodemoaccount.config.security;
 
-import org.springframework.beans.factory.annotation.Value;
+import com.cryptodemoaccount.config.YamlConfig;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,9 +19,9 @@ public class AdminUserService implements UserDetailsService {
 
     public AdminUserService(
             PasswordEncoder passwordEncoder,
-            @Value("${ADMIN_PASSWORD:admin}") String password
+            YamlConfig config
     ) {
-        this.encodePassword = passwordEncoder.encode(password);
+        this.encodePassword = passwordEncoder.encode(config.getAdmin().getPassword());
     }
 
     @Override

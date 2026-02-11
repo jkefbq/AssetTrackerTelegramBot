@@ -11,11 +11,12 @@ public class USDTButton implements IAssetListMenuButton, IAsset {
 
     @Getter
     private final String callbackData = Coins.USDT.getIdsName();
+    private final String text = "USDT";
 
     @Override
     public InlineKeyboardButton getButton() {
         return InlineKeyboardButton.builder()
-                .text("USDT")
+                .text(text)
                 .callbackData(callbackData)
                 .build();
     }

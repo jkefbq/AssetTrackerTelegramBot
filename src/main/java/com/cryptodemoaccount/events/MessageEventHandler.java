@@ -7,7 +7,7 @@ import com.cryptodemoaccount.database.service.BagService;
 import com.cryptodemoaccount.database.service.DataInitializerService;
 import com.cryptodemoaccount.database.service.UserQuestionService;
 import com.cryptodemoaccount.database.service.UserService;
-import com.cryptodemoaccount.menu.asset_list_menu.UserCoin;
+import com.cryptodemoaccount.menu.asset_list_menu.UserCoinDto;
 import com.cryptodemoaccount.menu.bag_menu.BagMenu;
 import com.cryptodemoaccount.menu.enter_asset_count_menu.EnterAssetCountMenu;
 import com.cryptodemoaccount.menu.main_menu.MainMenu;
@@ -83,7 +83,7 @@ public class MessageEventHandler {
 
     private void saveQuestionAndSendSuccess(MessageEvent event, Long chatId) {
         UUID userId = userService.findByChatId(chatId).orElseThrow().getId();
-        userQuestionService.save(
+        userQuestionService.create(
                 new UserQuestionDto(event.getUpdateDto().getUserInput().orElseThrow(), userId)
         );
         supportMenu.sendSuccess(chatId);
@@ -99,10 +99,10 @@ public class MessageEventHandler {
         var coinCount = BigDecimal.valueOf(
                 Double.parseDouble(event.getUpdateDto().getUserInput().orElseThrow().trim())
         );
-        UserCoin tmpCoin = assetService.getTmpUserCoin(chatId);
+        UserCoinDto tmpCoin = assetService.findByChatId(chatId).orElseThrow();
         tmpCoin.setCount(coinCount);
         BagDto updateBag = bagService.addAsset(tmpCoin);
-        bagService.updateBag(updateBag);
-        assetService.deleteTmpUserCoin(chatId);
+        bagService.update(updateBag);
+        assetService.deleteByChatId(chatId);
     }
 }
