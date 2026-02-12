@@ -3,9 +3,9 @@ package com.cryptodemoaccount;
 import com.cryptodemoaccount.database.repository.BagRepository;
 import com.cryptodemoaccount.database.repository.UserRepository;
 import com.cryptodemoaccount.database.service.DataInitializerService;
-import com.cryptodemoaccount.events.Button;
-import com.cryptodemoaccount.events.ButtonEventHandler;
-import com.cryptodemoaccount.events.MessageEventHandler;
+import com.cryptodemoaccount.event.Button;
+import com.cryptodemoaccount.event.MessageEventHandler;
+import com.cryptodemoaccount.event.buttonhandlers.MainMenuButtonEventHandler;
 import com.cryptodemoaccount.menu.bag_menu.BagMenu;
 import com.cryptodemoaccount.menu.main_menu.MainMenu;
 import com.cryptodemoaccount.menu.my_profile_menu.MyProfileMenu;
@@ -61,7 +61,7 @@ class BotApplicationTests {
     @MockitoSpyBean
     ButtonHandler buttonHandler;
     @MockitoSpyBean
-    ButtonEventHandler buttonEventHandler;
+    MainMenuButtonEventHandler mainMenuButtonEventHandler;
     @MockitoSpyBean
     MessageEventHandler messageEventHandler;
     @MockitoSpyBean
@@ -162,7 +162,7 @@ class BotApplicationTests {
         await().atMost(3, TimeUnit.SECONDS)
                 .untilAsserted(() -> {
                     verify(buttonHandler).handle(update.getCallbackQuery());
-                    verify(buttonEventHandler).handleMyBag(any());
+                    verify(mainMenuButtonEventHandler).handleMyBag(any());
                     verify(bagMenu).editMsgAndSendMenu(any(), any());
                 });
     }
@@ -177,7 +177,7 @@ class BotApplicationTests {
         await().atMost(3, TimeUnit.SECONDS)
                 .untilAsserted(() -> {
                     verify(buttonHandler).handle(update.getCallbackQuery());
-                    verify(buttonEventHandler).handleMyProfile(any());
+                    verify(mainMenuButtonEventHandler).handleMyProfile(any());
                     verify(profileMenu).editMsgAndSendMenu(any(), any());
                 });
     }
@@ -185,7 +185,7 @@ class BotApplicationTests {
     @Test
     public void simulationSendCommand_start() {
         var update = getUpdate_message();
-        update.getMessage().setText(com.cryptodemoaccount.events.Message.START.getText());
+        update.getMessage().setText(com.cryptodemoaccount.event.Message.START.getText());
 
         updateConsumer.consume(update);
 
@@ -203,7 +203,7 @@ class BotApplicationTests {
     @Test
     public void simulationSendCommand_bag() {
         var update = getUpdate_message();
-        update.getMessage().setText(com.cryptodemoaccount.events.Message.BAG.getText());
+        update.getMessage().setText(com.cryptodemoaccount.event.Message.BAG.getText());
 
         updateConsumer.consume(update);
 

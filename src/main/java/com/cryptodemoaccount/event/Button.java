@@ -1,4 +1,4 @@
-package com.cryptodemoaccount.events;
+package com.cryptodemoaccount.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +13,6 @@ public enum Button {
     CREATE_ASSET("create_asset"),
     UPDATE_ASSET("update_asset"),
     DELETE_ASSET("delete_asset"),
-    UPDATE_BAG_DATA("update_bag_data"),
     ASSETS("assets"),
     MY_ASSETS("my_assets"),
     TRADE_WITH_AI("trade_with_ai"),

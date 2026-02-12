@@ -1,7 +1,7 @@
 package com.cryptodemoaccount.aop;
 
-import com.cryptodemoaccount.events.MessageEvent;
-import com.cryptodemoaccount.database.service.AssetService;
+import com.cryptodemoaccount.event.MessageEvent;
+import com.cryptodemoaccount.database.service.UserCoinService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class MessageEventHandlerInterceptor {
 
-    private final AssetService assetService;
+    private final UserCoinService userCoinService;
 
     @Before("execution(* com.cryptodemoaccount.events.MessageEventHandler.*(..)) && " +
             "!execution(* com.cryptodemoaccount.events.MessageEventHandler.handleUnknown(..))")
@@ -31,6 +31,6 @@ public class MessageEventHandlerInterceptor {
             throw new IllegalStateException("cannot recognize " + joinPoint.getSignature().getName() +
                     " method args=" + args + " [lost ButtonEvent or AssetButtonEvent type]");
         }
-        assetService.deleteByChatId(chatId);
+        userCoinService.deleteByChatId(chatId);
     }
 }

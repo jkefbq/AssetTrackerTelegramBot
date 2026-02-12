@@ -23,7 +23,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class AssetServiceTest {
+public class UserCoinServiceTest {
 
     @Mock
     UserCoinRepository userCoinRepository;
@@ -31,7 +31,7 @@ public class AssetServiceTest {
     UserCoinMapperImpl mapper;
 
     @InjectMocks
-    AssetService assetService;
+    UserCoinService userCoinService;
 
     public UserCoinDto getUserCoin() {
         return new UserCoinDto(
@@ -51,7 +51,16 @@ public class AssetServiceTest {
     public void createTest() {
         var userCoin = getUserCoin();
 
-        assetService.create(userCoin);
+        userCoinService.create(userCoin);
+
+        verify(userCoinRepository, times(1)).save(any());
+    }
+
+    @Test
+    public void updateTest() {
+        var userCoin = getUserCoin();
+
+        userCoinService.update(userCoin);
 
         verify(userCoinRepository, times(1)).save(any());
     }
@@ -61,14 +70,14 @@ public class AssetServiceTest {
         UserCoinEntity entity = getUserCoinEntity();
         when(userCoinRepository.findByChatId(entity.getChatId())).thenReturn(Optional.of(entity));
 
-        assetService.findByChatId(entity.getChatId());
+        userCoinService.findByChatId(entity.getChatId());
 
         verify(userCoinRepository, times(1)).findByChatId(any());
     }
 
     @Test
     public void deleteByChatIdTest() {
-        assetService.deleteByChatId(1L);
+        userCoinService.deleteByChatId(1L);
 
         verify(userCoinRepository, times(1)).deleteByChatId(any());
     }
@@ -76,7 +85,7 @@ public class AssetServiceTest {
     @Test
     public void isUserWaitingNumberTest() {
         when(userCoinRepository.findByChatId(1L)).thenReturn(Optional.of(getUserCoinEntity()));
-        assetService.isUserWaitingNumber(1L);
+        userCoinService.isUserWaitingNumber(1L);
 
         verify(userCoinRepository, times(1)).findByChatId(any());
     }

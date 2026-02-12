@@ -1,6 +1,6 @@
 package com.cryptodemoaccount.service;
 
-import com.cryptodemoaccount.events.Button;
+import com.cryptodemoaccount.event.Button;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -54,7 +54,7 @@ public class UpdateConsumerTest {
     @Test
     public void consumeTest_withMessage() {
         var update = getTooledUpdate_withMessage();
-        update.getMessage().setText(com.cryptodemoaccount.events.Message.BAG.getText());
+        update.getMessage().setText(com.cryptodemoaccount.event.Message.BAG.getText());
         doNothing().when(messageHandler).handle(any());
 
         updateConsumer.consume(update);

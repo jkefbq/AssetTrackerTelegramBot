@@ -14,6 +14,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -56,7 +57,7 @@ public class BagService {
     }
 
     @Transactional
-    public void deleteByChatId(Long chatId, Coins coin) {
+    public void deleteAssetByChatId(Long chatId, Coins coin) {
         BagDto bag = findByChatId(chatId).orElseThrow();
         bag.getAssets().remove(coin);
         try {
@@ -90,11 +91,12 @@ public class BagService {
 
     @SneakyThrows
     @Transactional
-    public Map<Coins, Map.Entry<BigDecimal, BigDecimal>> getCoinCountAndPrices(Map<Coins, BigDecimal> coinCount) {
+    public Map<Coins, Map.Entry<BigDecimal, BigDecimal>> getCoinCountAndPrices(Long chatId) {
+        Map<Coins, BigDecimal> source = findByChatId(chatId).orElseThrow().getAssets();
         Map<Coins, Map.Entry<BigDecimal, BigDecimal>> result = new HashMap<>();
-        marketInfoKeeper.getCoinPrices(coinCount.keySet())
+        marketInfoKeeper.getCoinPrices(source.keySet())
                 .forEach((coin, price) ->
-                        result.put(coin, Map.entry(coinCount.get(coin), price))
+                        result.put(coin, Map.entry(source.get(coin), price))
                 );
         return result;
     }

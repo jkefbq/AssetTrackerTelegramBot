@@ -1,6 +1,5 @@
 package com.cryptodemoaccount.database.service;
 
-import com.cryptodemoaccount.database.entity.UserCoinEntity;
 import com.cryptodemoaccount.database.mapper.UserCoinMapper;
 import com.cryptodemoaccount.database.repository.UserCoinRepository;
 import com.cryptodemoaccount.menu.asset_list_menu.UserCoinDto;
@@ -14,7 +13,7 @@ import java.util.Optional;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class AssetService implements CrudService<UserCoinDto> {
+public class UserCoinService implements CrudService<UserCoinDto> {
 
     private final UserCoinRepository userCoinRepository;
     private final UserCoinMapper mapper;
@@ -53,13 +52,5 @@ public class AssetService implements CrudService<UserCoinDto> {
     @Transactional
     public boolean isUserWaitingNumber(Long chatId) {
         return userCoinRepository.findByChatId(chatId).isPresent();
-    }
-
-    public UserCoinDto toDto(UserCoinEntity entity) {
-        return mapper.toDto(entity);
-    }
-
-    public UserCoinEntity toEntity(UserCoinDto coin) {
-        return mapper.toEntity(coin);
     }
 }

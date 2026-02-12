@@ -4,6 +4,7 @@ import com.cryptodemoaccount.config.YamlConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.google.genai.Client;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -30,6 +31,13 @@ public class BotApplication {
     @Bean
     public TelegramClient telegramClient(YamlConfig config) {
         return new OkHttpTelegramClient(config.getApi().getTelegram().getKey());
+    }
+
+    @Bean
+    public Client geminiClient(YamlConfig config) {
+        return Client.builder()
+                .apiKey(config.getApi().getGemini().getKey())
+                .build();
     }
 
     @Bean

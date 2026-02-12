@@ -1,4 +1,4 @@
-package com.cryptodemoaccount.events;
+package com.cryptodemoaccount.event;
 
 import com.cryptodemoaccount.database.dto.UpdateDto;
 import org.junit.jupiter.api.Test;

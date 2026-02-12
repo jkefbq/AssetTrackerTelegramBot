@@ -1,8 +1,8 @@
 package com.cryptodemoaccount.service;
 
 import com.cryptodemoaccount.database.dto.UpdateDto;
-import com.cryptodemoaccount.events.Message;
-import com.cryptodemoaccount.events.MessageEvent;
+import com.cryptodemoaccount.event.Message;
+import com.cryptodemoaccount.event.MessageEvent;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;

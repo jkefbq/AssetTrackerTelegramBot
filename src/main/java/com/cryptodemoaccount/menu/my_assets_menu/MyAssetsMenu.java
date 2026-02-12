@@ -36,8 +36,7 @@ public class MyAssetsMenu implements IMenu {
     @SneakyThrows
     @Override
     public void editMsgAndSendMenu(Long chatId, Integer messageId) {
-        Map<Coins, BigDecimal> coinAndCount =  bagService.findByChatId(chatId).orElseThrow().getAssets();
-        Map<Coins, Map.Entry<BigDecimal, BigDecimal>> coinCountPrice = bagService.getCoinCountAndPrices(coinAndCount);
+        Map<Coins, Map.Entry<BigDecimal, BigDecimal>> coinCountPrice = bagService.getCoinCountAndPrices(chatId);
         EditMessageText editMessageText = EditMessageText.builder()
                 .chatId(chatId)
                 .messageId(messageId)
@@ -51,8 +50,7 @@ public class MyAssetsMenu implements IMenu {
     @SneakyThrows
     @Override
     public void sendMenu(Long chatId) {
-        Map<Coins, BigDecimal> coinAndCount =  bagService.findByChatId(chatId).orElseThrow().getAssets();
-        Map<Coins, Map.Entry<BigDecimal, BigDecimal>> coinCountPrice = bagService.getCoinCountAndPrices(coinAndCount);
+        Map<Coins, Map.Entry<BigDecimal, BigDecimal>> coinCountPrice = bagService.getCoinCountAndPrices(chatId);
         SendMessage sendMessage = SendMessage.builder()
                 .chatId(chatId)
                 .text(genAssetList(coinCountPrice))

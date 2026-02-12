@@ -1,8 +1,8 @@
 package com.cryptodemoaccount.service;
 
-import com.cryptodemoaccount.config.YamlConfig;
 import com.cryptodemoaccount.menu.asset_list_menu.Coins;
 import com.google.genai.Client;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -14,11 +14,12 @@ import java.util.Map;
 
 @Component
 @Service
+@RequiredArgsConstructor
 public class AIService {
 
     private static final String AI_MODEL = "gemini-2.5-flash";
     private static final String ADVICE_PROMPT;
-    private  final Client client;
+    private final Client client;
 
     static {
         try {
@@ -26,12 +27,6 @@ public class AIService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public AIService(YamlConfig config) {
-        client = Client.builder()
-                .apiKey(config.getApi().getGemini().getKey())
-                .build();
     }
 
     public String getAdvice(Map<Coins, BigDecimal> coins) {

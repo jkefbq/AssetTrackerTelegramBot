@@ -1,6 +1,6 @@
 package com.cryptodemoaccount.service;
 
-import com.cryptodemoaccount.events.MessageEvent;
+import com.cryptodemoaccount.event.MessageEvent;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -54,12 +54,12 @@ public class MessageHandlerTest {
     @Test
     public void publishMessageEventTest_StartMessage() {
         Update update = getTooledUpdate_withMessage();
-        update.getMessage().setText(com.cryptodemoaccount.events.Message.START.getText());
+        update.getMessage().setText(com.cryptodemoaccount.event.Message.START.getText());
         messageHandler.handle(update);
 
         verify(eventPublisher, times(1)).publishEvent(argumentCaptor.capture());
         var event = argumentCaptor.getValue();
-        assertEquals(event.getMessage(), com.cryptodemoaccount.events.Message.START);
+        assertEquals(event.getMessage(), com.cryptodemoaccount.event.Message.START);
         assertEquals(event.getUpdateDto().getFirstName(), update.getMessage().getFrom().getFirstName());
         assertEquals(event.getUpdateDto().getUserInput().orElseThrow(), update.getMessage().getText());
     }
@@ -72,7 +72,7 @@ public class MessageHandlerTest {
 
         verify(eventPublisher, times(1)).publishEvent(argumentCaptor.capture());
         var event = argumentCaptor.getValue();
-        assertEquals(event.getMessage(), com.cryptodemoaccount.events.Message.UNKNOWN);
+        assertEquals(event.getMessage(), com.cryptodemoaccount.event.Message.UNKNOWN);
         assertEquals(event.getUpdateDto().getFirstName(), update.getMessage().getFrom().getFirstName());
         assertEquals(event.getUpdateDto().getUserInput().orElseThrow(), update.getMessage().getText());
     }

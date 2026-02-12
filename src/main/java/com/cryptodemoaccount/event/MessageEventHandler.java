@@ -1,8 +1,8 @@
-package com.cryptodemoaccount.events;
+package com.cryptodemoaccount.event;
 
 import com.cryptodemoaccount.database.dto.BagDto;
 import com.cryptodemoaccount.database.dto.UserQuestionDto;
-import com.cryptodemoaccount.database.service.AssetService;
+import com.cryptodemoaccount.database.service.UserCoinService;
 import com.cryptodemoaccount.database.service.BagService;
 import com.cryptodemoaccount.database.service.DataInitializerService;
 import com.cryptodemoaccount.database.service.UserQuestionService;
@@ -36,7 +36,7 @@ public class MessageEventHandler {
     private final BagMenu bagMenu;
     private final BagService bagService;
     private final DataInitializerService initializer;
-    private final AssetService assetService;
+    private final UserCoinService userCoinService;
     private final EnterAssetCountMenu enterAssetCountMenu;
     private final WaitingMenu waitingMenu;
     private final LastMessageService lastMessageService;
@@ -74,7 +74,7 @@ public class MessageEventHandler {
     @EventListener(condition = "event.getMessage().name() == 'UNKNOWN'")
     public void handleUnknown(MessageEvent event) {
         var chatId = event.getUpdateDto().getChatId();
-        if (assetService.isUserWaitingNumber(chatId)) {
+        if (userCoinService.isUserWaitingNumber(chatId)) {
             addUserAssetAndSendSuccess(event, chatId);
         } else if (userService.isUserWriteQuestion(chatId)) {
             saveQuestionAndSendSuccess(event, chatId);
@@ -99,10 +99,10 @@ public class MessageEventHandler {
         var coinCount = BigDecimal.valueOf(
                 Double.parseDouble(event.getUpdateDto().getUserInput().orElseThrow().trim())
         );
-        UserCoinDto tmpCoin = assetService.findByChatId(chatId).orElseThrow();
+        UserCoinDto tmpCoin = userCoinService.findByChatId(chatId).orElseThrow();
         tmpCoin.setCount(coinCount);
         BagDto updateBag = bagService.addAsset(tmpCoin);
         bagService.update(updateBag);
-        assetService.deleteByChatId(chatId);
+        userCoinService.deleteByChatId(chatId);
     }
 }

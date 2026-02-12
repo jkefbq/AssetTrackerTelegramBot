@@ -1,4 +1,4 @@
-package com.cryptodemoaccount.events;
+package com.cryptodemoaccount.event;
 
 import com.cryptodemoaccount.menu.asset_list_menu.Coins;
 import lombok.Getter;

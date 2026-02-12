@@ -1,6 +1,6 @@
 package com.cryptodemoaccount.menu.main_menu;
 
-import com.cryptodemoaccount.events.Button;
+import com.cryptodemoaccount.event.Button;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;

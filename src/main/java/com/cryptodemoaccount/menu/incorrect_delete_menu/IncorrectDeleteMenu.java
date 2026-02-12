@@ -47,7 +47,7 @@ public class IncorrectDeleteMenu implements IMenu {
     }
 
     @SneakyThrows
-    public void EditMsgAndSendSuccess(Long chatId, Integer messageId) {
+    public void editMsgAndSendSuccess(Long chatId, Integer messageId) {
         EditMessageText editMessageText = EditMessageText.builder()
                 .chatId(chatId)
                 .messageId(messageId)

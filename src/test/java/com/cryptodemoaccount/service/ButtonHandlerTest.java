@@ -1,8 +1,8 @@
 package com.cryptodemoaccount.service;
 
-import com.cryptodemoaccount.events.AssetButtonEvent;
-import com.cryptodemoaccount.events.Button;
-import com.cryptodemoaccount.events.ButtonEvent;
+import com.cryptodemoaccount.event.AssetButtonEvent;
+import com.cryptodemoaccount.event.Button;
+import com.cryptodemoaccount.event.ButtonEvent;
 import com.cryptodemoaccount.menu.asset_list_menu.BitcoinButton;
 import com.cryptodemoaccount.menu.asset_list_menu.Coins;
 import com.cryptodemoaccount.menu.main_menu.ViewBagButton;

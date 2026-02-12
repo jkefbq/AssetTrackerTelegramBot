@@ -1,4 +1,4 @@
-package com.cryptodemoaccount.events;
+package com.cryptodemoaccount.event;
 
 import lombok.Getter;
 import lombok.ToString;

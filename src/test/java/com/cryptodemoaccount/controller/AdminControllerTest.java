@@ -1,5 +1,6 @@
 package com.cryptodemoaccount.controller;
 
+import com.cryptodemoaccount.config.YamlConfig;
 import com.cryptodemoaccount.config.security.AdminUserService;
 import com.cryptodemoaccount.config.security.SecurityConfig;
 import com.cryptodemoaccount.database.dto.UserDto;
@@ -9,6 +10,7 @@ import com.cryptodemoaccount.database.service.UserService;
 import com.cryptodemoaccount.menu.support_menu.SupportMenu;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -29,6 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @WebMvcTest(AdminController.class)
+@EnableConfigurationProperties(YamlConfig.class)
 @Import({SecurityConfig.class, AdminUserService.class})
 public class AdminControllerTest {
 
